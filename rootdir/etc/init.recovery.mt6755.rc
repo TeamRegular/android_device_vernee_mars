@@ -1,0 +1,23 @@
+on init
+
+    # set battery thread free
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 0E8D
+    write /sys/class/android_usb/android0/idProduct 2008
+    write /sys/class/android_usb/android0/functions mtp
+    write /sys/class/android_usb/android0/enable 1
+
+    # set twice to keep following action from race with battery thread
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 0E8D
+    write /sys/class/android_usb/android0/idProduct 2008
+    write /sys/class/android_usb/android0/functions mtp
+    write /sys/class/android_usb/android0/enable 1
+
+    # distinguish if USB should connect or not, CDP vs SDP
+    write /sys/devices/platform/mt_usb/cmode 2
+
+on property:ro.debuggable=1
+    # restore cmode to normal for USB enumeration
+    write /sys/devices/platform/mt_usb/cmode 1
+
